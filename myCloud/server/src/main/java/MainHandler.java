@@ -8,6 +8,15 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 
 public class MainHandler extends ChannelInboundHandlerAdapter {
+    private String nick;
+
+    public MainHandler() {
+    }
+
+    public MainHandler(String nick) {
+        this.nick = nick;
+    }
+
     @Override
     public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {
         try {
@@ -20,6 +29,8 @@ public class MainHandler extends ChannelInboundHandlerAdapter {
                     FileMessage fm = new FileMessage(Paths.get("server_storage/" + fr.getFilename()));
                     ctx.writeAndFlush(fm);
                 }
+            } else {
+                System.out.println("Main handler");
             }
         } finally {
             ctx.fireChannelRead(msg);
