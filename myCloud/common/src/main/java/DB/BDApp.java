@@ -135,7 +135,7 @@ public class BDApp {
     public boolean isLogged(String login, String password) {
         try {
             connectionDB();
-            preparedStatement = connection.prepareStatement("SELECT login, password FROM clients WHERE login=?, password=?");
+            preparedStatement = connection.prepareStatement("SELECT login, password FROM clients WHERE login=? and password=?");
             preparedStatement.setString(1, login);
             preparedStatement.setString(2, password);
             ResultSet rs = preparedStatement.executeQuery();
