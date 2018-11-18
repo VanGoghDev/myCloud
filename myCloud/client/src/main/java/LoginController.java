@@ -41,6 +41,7 @@ public class LoginController implements Initializable {
                         if (loggedIn) {
                             Platform.runLater(() -> {
                                 try {
+                                    closeSignIn();
                                     runMainApp();
                                 } catch (IOException e) {
                                     e.printStackTrace();
@@ -70,9 +71,11 @@ public class LoginController implements Initializable {
         } else {
             System.out.println("No data typed in");
         }
+    }
+
+    public void closeSignIn() {
         Stage stage = (Stage) signInBtn.getScene().getWindow();
         stage.close();
-
     }
 
     public void openSignUp(ActionEvent event) throws IOException {

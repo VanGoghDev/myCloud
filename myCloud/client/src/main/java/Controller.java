@@ -15,8 +15,9 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
 import java.util.ResourceBundle;
+import java.util.logging.Logger;
 
-public class Controller  implements Initializable {
+public class Controller  extends LoginController {
 
     @FXML
     TextField tfFileName;
