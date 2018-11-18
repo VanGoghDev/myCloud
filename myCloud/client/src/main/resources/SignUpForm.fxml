@@ -15,6 +15,6 @@
         <Label layoutX="52.0" layoutY="120.0" text="Age:" />
         <Label layoutX="50.0" layoutY="179.0" text="Login:" />
         <Label layoutX="52.0" layoutY="236.0" text="Password:" />
-        <Button layoutX="109.0" layoutY="309.0" mnemonicParsing="false" onAction="#signUp" prefHeight="25.0" prefWidth="90.0" text="Confirm" />
+        <Button fx:id="confirm" layoutX="109.0" layoutY="309.0" mnemonicParsing="false" onAction="#signUp" prefHeight="25.0" prefWidth="90.0" text="Confirm" />
     </children>
 </Pane>
