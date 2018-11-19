@@ -1,8 +1,10 @@
+import com.sun.xml.internal.ws.policy.privateutil.PolicyUtils;
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.scene.control.Button;
 import javafx.scene.control.ListView;
 import javafx.scene.control.TextField;
 import messages.AbstractMessage;
@@ -15,15 +17,14 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
 import java.util.ResourceBundle;
-import java.util.logging.Logger;
 
-public class Controller  extends LoginController {
+public class Controller implements Initializable {
 
-    @FXML
-    TextField tfFileName;
-
-    @FXML
-    ListView<String> filesList;
+    @FXML ListView<String> listViewClient;
+    @FXML ListView<String> listViewServer;
+    @FXML TextField tfDownload;
+    @FXML TextField tfUpload;
+    @FXML Button downloadBtn;
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
@@ -36,6 +37,7 @@ public class Controller  extends LoginController {
                         FileMessage fm = (FileMessage) am;
                         Files.write(Paths.get("client_storage/" + fm.getFilename()), fm.getData(), StandardOpenOption.CREATE);
                         refreshLocalFilesList();
+                        refreshServerFilesList();
                     }
                 }
             } catch (ClassNotFoundException | IOException e) {
@@ -46,34 +48,57 @@ public class Controller  extends LoginController {
         });
         t.setDaemon(true);
         t.start();
-        filesList.setItems(FXCollections.observableArrayList());
+        listViewClient.setItems(FXCollections.observableArrayList());
         refreshLocalFilesList();
+        refreshServerFilesList();
+    }
+
+    public void pressOnUploadBtn(ActionEvent actionEvent) {
+
     }
 
     public void pressOnDownloadBtn(ActionEvent actionEvent) {
-        if (tfFileName.getLength() > 0) {
-            Network.sendMsg(new FileRequest(tfFileName.getText()));
-            tfFileName.clear();
+        if (tfDownload.getLength() > 0) {
+            Network.sendMsg(new FileRequest(tfDownload.getText()));
+            tfDownload.clear();
         }
     }
 
     public void refreshLocalFilesList() {
         if (Platform.isFxApplicationThread()) {
             try {
-                filesList.getItems().clear();
-                Files.list(Paths.get("client_storage")).map(p -> p.getFileName().toString()).forEach(o -> filesList.getItems().add(o));
+                listViewClient.getItems().clear();
+                Files.list(Paths.get("client_storage")).map(p -> p.getFileName().toString()).forEach(o -> listViewClient.getItems().add(o));
             } catch (IOException e) {
                 e.printStackTrace();
             }
         } else {
-            Platform.runLater(() -> {
-                try {
-                    filesList.getItems().clear();
-                    Files.list(Paths.get("client_storage")).map(p -> p.getFileName().toString()).forEach(o -> filesList.getItems().add(o));
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            });
+            refresh(listViewClient, "client");
         }
+    }
+
+    public void refreshServerFilesList() {
+        if (Platform.isFxApplicationThread()) {
+            try {
+                listViewServer.getItems().clear();
+                Files.list(Paths.get("server_storage")).map(p -> p.getFileName().toString()).forEach(o -> listViewServer.getItems().add(o));
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        } else {
+            refresh(listViewServer, "server");
+        }
+    }
+
+    private void refresh(ListView<String> input, String path) {
+        Platform.runLater(() -> {
+            try {
+                input.getItems().clear();
+                Files.list(Paths.get(path + "_storage")).map(p -> p.getFileName().toString()).forEach(o -> input.getItems().add(o));
+
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        });
     }
 }

@@ -7,9 +7,9 @@ import javafx.stage.Stage;
 public class MainClient extends Application {
     @Override
     public void start(Stage primaryStage) throws Exception {
-        Parent root = FXMLLoader.load(getClass().getResource("/sample.fxml"));
+        Parent root = FXMLLoader.load(getClass().getResource("/MainWindow.fxml"));
         primaryStage.setTitle("cloud");
-        primaryStage.setScene(new Scene(root, 500, 550));
+        primaryStage.setScene(new Scene(root, 600, 400));
         primaryStage.show();
     }
 
