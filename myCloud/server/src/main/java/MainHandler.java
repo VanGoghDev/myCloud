@@ -4,6 +4,7 @@ import io.netty.util.ReferenceCountUtil;
 import messages.FileMessage;
 import messages.FileRequest;
 
+import java.io.File;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 
