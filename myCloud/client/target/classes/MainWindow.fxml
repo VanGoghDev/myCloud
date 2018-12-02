@@ -35,7 +35,7 @@
       </MenuBar>
    </top>
    <bottom>
-      <TextArea prefHeight="61.0" prefWidth="600.0" BorderPane.alignment="CENTER" />
+      <TextArea fx:id="taField" prefHeight="61.0" prefWidth="600.0" BorderPane.alignment="CENTER" />
    </bottom>
    <center>
       <VBox minHeight="-Infinity" minWidth="-Infinity" prefHeight="314.0" prefWidth="231.0" BorderPane.alignment="CENTER">
@@ -59,8 +59,9 @@
             <TextField fx:id="tfDownload" layoutX="2.0" layoutY="28.0" prefHeight="25.0" prefWidth="113.0" promptText="Type the file name" />
             <Button fx:id="downloadBtn" layoutX="42.0" layoutY="59.0" mnemonicParsing="false" onAction="#pressOnDownloadBtn" text="Download" />
             <TextField fx:id="tfUpload" layoutX="2.0" layoutY="121.0" prefHeight="25.0" prefWidth="113.0" promptText="Type the file name" />
-            <Button fx:id="uploadBtn" layoutX="42.0" layoutY="157.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="70.0" text="Upload" />
+            <Button fx:id="uploadBtn" layoutX="42.0" layoutY="157.0" mnemonicParsing="false" onAction="#pressOnUploadBtn" prefHeight="25.0" prefWidth="70.0" text="Upload" />
             <Label prefHeight="18.0" prefWidth="116.0" text="Control Panel:" />
+            <Button fx:id="updateBtn" layoutX="42.0" layoutY="275.0" mnemonicParsing="false" onAction="#pressOnUpdateBtn" prefHeight="25.0" prefWidth="71.0" text="Update" />
          </children></Pane>
    </left>
 </BorderPane>
