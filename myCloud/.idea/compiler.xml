@@ -11,8 +11,5 @@
         <module name="server" />
       </profile>
     </annotationProcessing>
-    <bytecodeTargetLevel>
-      <module name="myCloud" target="1.8" />
-    </bytecodeTargetLevel>
   </component>
 </project>
