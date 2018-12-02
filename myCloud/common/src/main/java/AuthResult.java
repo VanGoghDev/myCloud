@@ -1,3 +1,4 @@
+import DB.User;
 import messages.AbstractMessage;
 
 public class AuthResult extends AbstractMessage {

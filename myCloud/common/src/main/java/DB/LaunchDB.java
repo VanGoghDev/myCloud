@@ -7,6 +7,6 @@ public class LaunchDB {
         //app.createDB();
         //app.clearTable();
         //app.insert(new User(1, "Kirill", 421, "ll", "lo"));
-        System.out.println(app.isRegistered("ll"));
+        app.clearTable();
     }
 }

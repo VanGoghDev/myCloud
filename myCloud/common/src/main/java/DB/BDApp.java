@@ -159,8 +159,35 @@ public class BDApp {
         User user = null;
         try {
             connectionDB();
-            preparedStatement = connection.prepareStatement("SELECT id, name, age, login, password FROM clients WHERE id=?");
+            preparedStatement = connection.prepareStatement("SELECT id, firstName, age, login, password FROM clients WHERE id=?");
             preparedStatement.setInt(1, id);
+            ResultSet rs = preparedStatement.executeQuery();
+            while (rs.next()) {
+                user = new User(rs.getInt(1),
+                        rs.getString(2),
+                        rs.getInt(3),
+                        rs.getString(4),
+                        rs.getString(5));
+            }
+        } catch (SQLException e) {
+            LOGGER.severe(e.getMessage());
+        } finally {
+            try {
+                preparedStatement.close();
+                connection.close();
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        }
+        return user;
+    }
+
+    public User get(String login) {
+        User user = null;
+        try {
+            connectionDB();
+            preparedStatement = connection.prepareStatement("SELECT id, firstName, age, login, password FROM clients WHERE login=?");
+            preparedStatement.setString(1, login);
             ResultSet rs = preparedStatement.executeQuery();
             while (rs.next()) {
                 user = new User(rs.getInt(1),
@@ -186,7 +213,7 @@ public class BDApp {
         List<User> list = new LinkedList<>();
         try {
             connectionDB();
-            preparedStatement = connection.prepareStatement("SELECT id, name, age, login, password FROM clients");
+            preparedStatement = connection.prepareStatement("SELECT id, firstName, age, login, password FROM clients");
             ResultSet rs = preparedStatement.executeQuery();
             while (rs.next()) {
                 list.add(new User(rs.getInt(1),
