@@ -1,3 +1,4 @@
+import DB.User;
 import com.sun.xml.internal.ws.policy.privateutil.PolicyUtils;
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
@@ -6,10 +7,9 @@ import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
 import javafx.scene.control.ListView;
+import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
-import messages.AbstractMessage;
-import messages.FileMessage;
-import messages.FileRequest;
+import messages.*;
 
 import java.io.IOException;
 import java.net.URL;
@@ -25,19 +25,37 @@ public class Controller implements Initializable {
     @FXML TextField tfDownload;
     @FXML TextField tfUpload;
     @FXML Button downloadBtn;
+    @FXML TextArea taField;
+
+    private final String CONSOLE = "Console: ";
+    final User[] loggedUser = {null};
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        Network.start();
         Thread t = new Thread(() -> {
             try {
                 while (true) {
                     AbstractMessage am = Network.readObject();
+                    if (am instanceof UserRequest) {
+                        UserRequest ur = (UserRequest) am;
+                        loggedUser[0] = ur.getUser();
+                        refreshFilesList(loggedUser[0].clientStorageDirectory, listViewClient);
+                        refreshFilesList(loggedUser[0].serverStorageDirectory, listViewServer);
+                    }
                     if (am instanceof FileMessage) {
+                        System.out.println("I am controller");
                         FileMessage fm = (FileMessage) am;
-                        Files.write(Paths.get("client_storage/" + fm.getFilename()), fm.getData(), StandardOpenOption.CREATE);
-                        refreshLocalFilesList();
-                        refreshServerFilesList();
+
+                        Files.write(Paths.get(fm.getUser().clientStorageDirectory + fm.getFilename()), fm.getData(), StandardOpenOption.CREATE);
+                        refreshFilesList(fm.getUser().clientStorageDirectory, listViewClient);
+                        refreshFilesList(fm.getUser().serverStorageDirectory, listViewServer);
+                        taField.setText(CONSOLE + "file '" + fm.getFilename() + "' downloaded");
+                    }
+                    if (am instanceof FilePush) {
+                        FilePush fp = (FilePush) am;
+                        if (fp.isResult())
+                            taField.setText(CONSOLE + " file '" + ((FilePush) am).getFilename() + "' has been written");
+                        else taField.setText(CONSOLE + " file '" + ((FilePush) am).getFilename() + "' is on cloud already");
                     }
                 }
             } catch (ClassNotFoundException | IOException e) {
@@ -49,12 +67,19 @@ public class Controller implements Initializable {
         t.setDaemon(true);
         t.start();
         listViewClient.setItems(FXCollections.observableArrayList());
-        refreshLocalFilesList();
-        refreshServerFilesList();
     }
 
-    public void pressOnUploadBtn(ActionEvent actionEvent) {
-
+    public void pressOnUploadBtn(ActionEvent actionEvent) throws IOException {
+        if (tfUpload.getLength() > 0) {
+            if (Files.exists(Paths.get(loggedUser[0].clientStorageDirectory + tfUpload.getText()))) {
+                FilePush fp = new FilePush(Paths.get(loggedUser[0].clientStorageDirectory + tfUpload.getText()), loggedUser[0]);
+                Network.sendMsg(fp);
+            } else {
+                taField.setText(CONSOLE + " file not exist");
+            }
+            //Network.sendMsg(new FilePush(tfUpload.getText()));
+            tfUpload.clear();
+        }
     }
 
     public void pressOnDownloadBtn(ActionEvent actionEvent) {
@@ -64,29 +89,21 @@ public class Controller implements Initializable {
         }
     }
 
-    public void refreshLocalFilesList() {
+    public void pressOnUpdateBtn(ActionEvent actionEvent) {
+        //refreshLocalFilesList();
+        //refreshServerFilesList();
+    }
+
+    public void refreshFilesList(String directory, ListView listView) {
         if (Platform.isFxApplicationThread()) {
             try {
                 listViewClient.getItems().clear();
-                Files.list(Paths.get("client_storage")).map(p -> p.getFileName().toString()).forEach(o -> listViewClient.getItems().add(o));
+                Files.list(Paths.get(directory)).map(p -> p.getFileName().toString()).forEach(o -> listViewClient.getItems().add(o));
             } catch (IOException e) {
                 e.printStackTrace();
             }
         } else {
-            refresh(listViewClient, "client");
-        }
-    }
-
-    public void refreshServerFilesList() {
-        if (Platform.isFxApplicationThread()) {
-            try {
-                listViewServer.getItems().clear();
-                Files.list(Paths.get("server_storage")).map(p -> p.getFileName().toString()).forEach(o -> listViewServer.getItems().add(o));
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        } else {
-            refresh(listViewServer, "server");
+            refresh(listView, directory);
         }
     }
 
@@ -94,7 +111,7 @@ public class Controller implements Initializable {
         Platform.runLater(() -> {
             try {
                 input.getItems().clear();
-                Files.list(Paths.get(path + "_storage")).map(p -> p.getFileName().toString()).forEach(o -> input.getItems().add(o));
+                Files.list(Paths.get(path)).map(p -> p.getFileName().toString()).forEach(o -> input.getItems().add(o));
 
             } catch (IOException e) {
                 e.printStackTrace();

@@ -12,6 +12,7 @@ public class Client extends Application {
         Parent root = FXMLLoader.load(getClass().getResource("/LoginForm.fxml"));
         primaryStage.setTitle("login");
         primaryStage.setScene(new Scene(root, 500, 150));
+        primaryStage.setResizable(false);
         primaryStage.show();
     }
 

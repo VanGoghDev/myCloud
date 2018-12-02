@@ -1,4 +1,4 @@
-import com.sun.xml.internal.ws.policy.privateutil.PolicyUtils;
+import DB.BDApp;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -11,7 +11,6 @@ import javafx.scene.control.TextField;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import messages.AbstractMessage;
-import messages.MyMessage;
 import messages.SignInMessage;
 
 import java.io.IOException;
@@ -24,7 +23,6 @@ public class LoginController implements Initializable {
     @FXML TextField passwordField;
     @FXML Button signInBtn;
 
-    private boolean loggedIn = false;
     AbstractMessage am;
 
     @Override
@@ -37,8 +35,7 @@ public class LoginController implements Initializable {
                     if (am instanceof AuthResult) {
                         AuthResult ar = (AuthResult) am;
                         System.out.println(ar.toString());
-                        loggedIn = ar.loggedIn;
-                        if (loggedIn) {
+                        if (ar.loggedIn) {
                             Platform.runLater(() -> {
                                 try {
                                     closeSignIn();
@@ -47,6 +44,7 @@ public class LoginController implements Initializable {
                                     e.printStackTrace();
                                 }
                             });
+                            break;
                         }
                     }
                 }
@@ -62,12 +60,14 @@ public class LoginController implements Initializable {
         Stage stage = new Stage();
         stage.setTitle("Client Cloud");
         stage.initModality(Modality.APPLICATION_MODAL);
+        stage.setResizable(false);
         loadNewWindow(stage, "/MainWindow.fxml");
     }
 
     public void signIn(ActionEvent event) throws IOException {
         if (loginField.getLength() > 0 && passwordField.getLength() > 0) {
             Network.sendMsg(new SignInMessage(loginField.getText(), passwordField.getText()));
+            BDApp bdApp = new BDApp();
         } else {
             System.out.println("No data typed in");
         }
@@ -82,6 +82,7 @@ public class LoginController implements Initializable {
         Stage stage = new Stage();
         stage.setTitle("Sign Up");
         stage.initModality(Modality.APPLICATION_MODAL);
+        stage.setResizable(false);
         loadNewWindow(stage, "/SignUpForm.fxml");
     }
 
