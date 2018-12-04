@@ -1,2 +1,2 @@
 # myCloud
-Cloud service
+Cloud service ::cloud::
