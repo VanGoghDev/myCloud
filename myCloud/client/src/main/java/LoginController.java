@@ -61,7 +61,7 @@ public class LoginController implements Initializable {
         stage.setTitle("Client Cloud");
         stage.initModality(Modality.APPLICATION_MODAL);
         stage.setResizable(false);
-        loadNewWindow(stage, "/MainWindow.fxml");
+        loadNewWindow(stage, "/App.fxml");
     }
 
     public void signIn(ActionEvent event) throws IOException {
