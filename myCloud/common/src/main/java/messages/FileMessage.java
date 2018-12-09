@@ -11,6 +11,12 @@ public class FileMessage extends AbstractMessage{
     private byte[] data;
     private User user;
 
+    public FileMessage(String filename, byte[] copyOfRange, User user) {
+        this.filename = filename;
+        data = copyOfRange;
+        this.user = user;
+    }
+
     public String getFilename() {
         return filename;
     }
@@ -18,11 +24,6 @@ public class FileMessage extends AbstractMessage{
     public byte[] getData() {
         return data;
     }
-
-    /*public FileMessage(Path path) throws IOException {
-        filename = path.getFileName().toString();
-        data = Files.readAllBytes(path);
-    }*/
 
     public FileMessage(Path path, User user) throws IOException {
         filename = path.getFileName().toString();
