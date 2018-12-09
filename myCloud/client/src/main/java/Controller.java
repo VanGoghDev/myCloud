@@ -39,16 +39,16 @@ public class Controller implements Initializable {
                     if (am instanceof UserRequest) {
                         UserRequest ur = (UserRequest) am;
                         loggedUser[0] = ur.getUser();
-                        //refreshFilesList(loggedUser[0].clientStorageDirectory, listViewClient);
-                        //refreshFilesList(loggedUser[0].serverStorageDirectory, listViewServer);
+                        refreshFilesList(loggedUser[0].clientStorageDirectory, listViewClient);
+                        refreshFilesList(loggedUser[0].serverStorageDirectory, listViewServer);
                     }
                     if (am instanceof FileMessage) {
                         System.out.println("I am controller");
                         FileMessage fm = (FileMessage) am;
 
                         Files.write(Paths.get(fm.getUser().clientStorageDirectory + fm.getFilename()), fm.getData(), StandardOpenOption.CREATE);
-                        //refreshFilesList(fm.getUser().clientStorageDirectory, listViewClient);
-                        //refreshFilesList(fm.getUser().serverStorageDirectory, listViewServer);
+                        refreshFilesList(fm.getUser().clientStorageDirectory, listViewClient);
+                        refreshFilesList(fm.getUser().serverStorageDirectory, listViewServer);
                         taField.setText(CONSOLE + "file '" + fm.getFilename() + "' downloaded");
                     }
                     if (am instanceof FilePush) {
@@ -94,7 +94,7 @@ public class Controller implements Initializable {
         //refreshServerFilesList();
     }
 
- /*   public void refreshFilesList(String directory, ListView listView) {
+    public void refreshFilesList(String directory, ListView listView) {
         if (Platform.isFxApplicationThread()) {
             try {
                 listViewClient.getItems().clear();
@@ -117,5 +117,5 @@ public class Controller implements Initializable {
                 e.printStackTrace();
             }
         });
-    }*/
+    }
 }
