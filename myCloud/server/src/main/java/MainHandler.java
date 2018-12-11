@@ -6,6 +6,7 @@ import messages.FileMessage;
 import messages.FilePush;
 import messages.FileRequest;
 import messages.UserRequest;
+import utils.FilePartion;
 
 import java.nio.file.Files;
 import java.nio.file.Paths;
@@ -32,7 +33,8 @@ public class MainHandler extends ChannelInboundHandlerAdapter {
                 FileRequest fr = (FileRequest) msg;
                 if (Files.exists(Paths.get(this.user.serverStorageDirectory+ fr.getFilename()))) {
                     FileMessage fm = new FileMessage(Paths.get(this.user.serverStorageDirectory + fr.getFilename()), user);
-                    ctx.writeAndFlush(fm);
+                    //FilePartion.sendFile(Paths.get(this.user.serverStorageDirectory + fr.getFilename()), ctx, this.user);
+                    //ctx.writeAndFlush(fm);
                 }
             }
             if (msg instanceof FilePush) {
@@ -41,10 +43,6 @@ public class MainHandler extends ChannelInboundHandlerAdapter {
                     Files.write(Paths.get(fp.getUser().serverStorageDirectory + fp.getFilename()), fp.getData(), StandardOpenOption.CREATE);
                     fp.setResult(true);
                     ctx.writeAndFlush(fp);
-                    /*FileMessage fm = new FileMessage(Paths.get(user.serverStorageDirectory + fp.getFilename()), user);
-                    Files.write(Paths.get(user.serverStorageDirectory + fm.getFilename()), fm.getData(), StandardOpenOption.CREATE);
-                    fp.setResult(true);
-                    ctx.writeAndFlush(fp);*/
                 }
                 else {
                     fp.setResult(false);
